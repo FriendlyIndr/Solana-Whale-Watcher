@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale Watch 🐳 - Track Solana's Biggest Wallets</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="background-animation"></div>
+    <svg class="floating-whale" width="200" height="100" viewBox="0 0 200 100">
+        <path d="M40,50 C40,30 60,10 100,10 C140,10 160,30 160,50 C160,70 140,90 100,90 C60,90 40,70 40,50 Z" fill="#3b82f6" opacity="0.5"/>
+        <circle cx="75" cy="40" r="5" fill="#0f1628"/>
+        <path d="M140,50 C160,50 180,60 190,80" stroke="#3b82f6" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Sound Toggle Button -->
+    <div class="sound-toggle" id="soundToggle">
+        <i class="fas fa-volume-mute"></i>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="logo"><span>🐳</span> <p>Whale Watch</p></h1>
+            <p class="tagline">Track Solana's biggest wallets in real time</p>
+            <button class="cta-button" id="exploreFeed">
+                <i class="fas fa-eye"></i> Explore Whale Movements
+            </button>
+        </div>
+    </section>
+
+    <!-- Wallet Lookup Section -->
+    <section class="wallet-lookup" id="walletLookup">
+        <div class="container">
+            <div class="search-container">
+                <h2 class="search-title"><i class="fas fa-search"></i> Track any wallet</h2>
+                <form class="search-form" id="searchForm">
+                    <input type="text" class="search-input" id="walletInput" placeholder="Enter Solana wallet address..." autocomplete="off">
+                    <!-- Continuing from where you left off -->
+<button type="submit" class="search-button">Track Wallet</button>
+                </form>
+                <div class="suggestions" id="suggestions">
+                    <div class="suggestion-item" data-address="4ndrwRCJbVUqQGmvK9r451ixTEzRRMbU8nZ3DqWi7Ez">
+                        <span class="suggestion-wallet">4ndw...i7Ez</span>
+                        <span class="suggestion-label">Known Whale</span>
+                    </div>
+                    <div class="suggestion-item" data-address="8JRNHBNsp6uUCrRNQTu5vnBRe3TdYgP2GqPwHH6prLg4">
+                        <span class="suggestion-wallet">8JRN...rLg4</span>
+                        <span class="suggestion-label">Jump Trading</span>
+                    </div>
+                    <div class="suggestion-item" data-address="5GZL2TZ35KnqwiBFeiQcMqrAaCvG6QH8mgJCVVMmMFLG">
+                        <span class="suggestion-wallet">5GZL...MFLG</span>
+                        <span class="suggestion-label">Alameda</span>
+                    </div>
+                </div>
+                <div class="tooltip">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Pro tip: Try "4ndw...i7Ez" to see a known whale or enter any Solana address</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Whale Feed Section -->
+    <section class="whale-feed" id="whaleFeed">
+        <div class="container">
+            <div class="feed-header">
+                <h2 class="feed-title"><i class="fas fa-water"></i> Live Whale Feed</h2>
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span>LIVE</span>
+                </div>
+            </div>
+            <div class="feed-cards" id="feedCards">
+                <!-- Cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section class="analytics" id="analytics">
+        <div class="container">
+            <div class="analytics-header">
+                <h2 class="feed-title"><i class="fas fa-chart-line"></i> Whale Analytics</h2>
+            </div>
+            <div class="analytics-grid">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Whale Volume (24h)</h3>
+                        <div class="time-filter">
+                            <button class="filter-btn" data-time="1h">1H</button>
+                            <button class="filter-btn" data-time="4h">4H</button>
+                            <button class="filter-btn active" data-time="24h">24H</button>
+                            <button class="filter-btn" data-time="7d">7D</button>
+                        </div>
+                    </div>
+                    <canvas id="volumeChart"></canvas>
+                </div>
+                <div class="top-whales">
+                    <div class="top-whales-header">
+                        <h3 class="chart-title">Top 5 Whales (This Hour)</h3>
+                    </div>
+                    <div class="whale-list" id="whaleList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal" id="whaleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-wallet"></i>
+                    <span>Whale Details: <span class="modal-address" id="modalAddress">...</span></span>
+                </h2>
+                <button class="close-button" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="wallet-summary">
+                    <div class="summary-item">
+                        <div class="summary-value" id="walletBalance">$12.4M</div>
+                        <div class="summary-label">Total Balance</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="txCount">243</div>
+                        <div class="summary-label">Transactions (24h)</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="whaleRank">#3</div>
+                        <div class="summary-label">Whale Rank</div>
+                    </div>
+                </div>
+                
+                <h3 class="tokens-title"><i class="fas fa-coins"></i> Token Holdings</h3>
+                <div class="token-grid" id="tokenGrid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                
+                <h3 class="transactions-title"><i class="fas fa-exchange-alt"></i> Recent Transactions</h3>
+                <div class="transaction-list" id="transactionList">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <i class="fas fa-whale"></i> Whale Watch
+                    </div>
+                    <div class="footer-tagline">
+                        Real-time whale tracking on Solana
+                    </div>
+                </div>
+                <div class="footer-right">
+                    <div class="hackathon-text">
+                        Built for 2025 Solana Global Hackathon
+                    </div>
+                    <div class="team-members">
+                        Team Whale Watchers | <a href="https://github.com/whalewatch" target="_blank" style="color: var(--accent); text-decoration: none;">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
